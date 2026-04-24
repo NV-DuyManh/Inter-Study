@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tin Tức Tổng Hợp</title>
+    <style>
+        /* ================= CẤU HÌNH GIAO DIỆN (CSS) ================= */
+        :root {
+            --primary-vne: #9f224e;  /* VnExpress: Đỏ tím */
+            --primary-tn: #007bff;   /* Thanh Niên: Xanh dương */
+            --primary-tt: #cd2027;   /* Tuổi Trẻ: Đỏ tươi */
+            --primary-ld: #e12f27;   /* Lao Động: Đỏ cam (MỚI) */
+            --primary-vnn: #004595;  /* VietnamNet: Xanh đậm */
+            
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        /* KHU VỰC NÚT ĐIỀU KHIỂN */
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; 
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-toggle {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: #fff;
+            color: #777;
+            border: 2px solid transparent;
+        }
+
+        .btn-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Trạng thái nút khi đang BẬT (Active) */
+        .btn-toggle.active-vne { background-color: var(--primary-vne); color: white; border-color: var(--primary-vne); }
+        .btn-toggle.active-tn { background-color: var(--primary-tn); color: white; border-color: var(--primary-tn); }
+        .btn-toggle.active-tt { background-color: var(--primary-tt); color: white; border-color: var(--primary-tt); }
+        .btn-toggle.active-ld { background-color: var(--primary-ld); color: white; border-color: var(--primary-ld); } /* MỚI */
+        .btn-toggle.active-vnn { background-color: var(--primary-vnn); color: white; border-color: var(--primary-vnn); }
+
+        /* KHU VỰC HIỂN THỊ TIN TỨC */
+        #news-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid #ccc;
+            overflow: hidden;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Màu viền trên của thẻ tin */
+        .news-card.source-vne { border-top-color: var(--primary-vne); }
+        .news-card.source-tn { border-top-color: var(--primary-tn); }
+        .news-card.source-tt { border-top-color: var(--primary-tt); }
+        .news-card.source-ld { border-top-color: var(--primary-ld); } /* MỚI */
+        .news-card.source-vnn { border-top-color: var(--primary-vnn); }
+
+        .news-source {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #888;
+        }
+        
+        .news-title {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .news-summary {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* CSS chỉnh ảnh trong nội dung tin */
+        .news-summary img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .news-summary br { display: none; }
+        .news-summary a { pointer-events: none; color: #666; text-decoration: none; } 
+
+        .news-link {
+            text-decoration: none;
+            background-color: #eee;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            transition: background 0.2s;
+            margin-top: auto;
+            display: block;
+        }
+
+        .news-link:hover {
+            background-color: #ddd;
+        }
+
+        .loading {
+            text-align: center;
+            width: 100%;
+            grid-column: 1 / -1;
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Tổng Hợp Tin Tức 24h</h1>
+
+        <div class="controls">
+            <button id="btn-vne" class="btn-toggle" onclick="toggleSource('vne')">VNExpress</button>
+            <button id="btn-tn" class="btn-toggle" onclick="toggleSource('tn')">Thanh Niên</button>
+            <button id="btn-tt" class="btn-toggle" onclick="toggleSource('tt')">Tuổi Trẻ</button>
+            <button id="btn-ld" class="btn-toggle" onclick="toggleSource('ld')">Lao Động</button>
+            <button id="btn-vnn" class="btn-toggle" onclick="toggleSource('vnn')">VietnamNet</button>
+        </div>
+
+        <div id="news-container">
+            <div class="loading">Hãy chọn một nguồn tin để bắt đầu...</div>
+        </div>
+    </div>
+
+    <script>
+        // ================= TRẠNG THÁI VÀ DỮ LIỆU =================
+        // Đã thay dt (Dân Trí) bằng ld (Lao Động)
+        let newsData = { 
+            vne: [], tn: [], tt: [], ld: [], vnn: [] 
+        };
+
+        let state = { 
+            vne: false, tn: false, tt: false, ld: false, vnn: false 
+        };
+
+        // ================= HÀM XỬ LÝ CHÍNH =================
+        
+        async function toggleSource(source) {
+            const btnId = 'btn-' + source;
+            const btn = document.getElementById(btnId);
+            const activeClass = 'active-' + source;
+            
+            state[source] = !state[source];
+
+            if (state[source]) {
+                btn.classList.add(activeClass);
+                if (newsData[source].length === 0) {
+                    await fetchNews(source); 
+                }
+            } else {
+                btn.classList.remove(activeClass);
+            }
+
+            renderAllNews();
+        }
+
+        async function fetchNews(source) {
+            const container = document.getElementById("news-container");
+            
+            if (container.innerHTML.trim() === "" || container.innerText.includes("Hãy chọn")) {
+                container.innerHTML = '<div class="loading">Đang tải dữ liệu từ ' + source.toUpperCase() + '...</div>';
+            }
+
+            try {
+                let endpoint = "";
+                if (source === 'vne') endpoint = '/api/news/vnexpress';
+                else if (source === 'tn') endpoint = '/api/news/thanhnien';
+                else if (source === 'tt') endpoint = '/api/news/tuoitre';
+                else if (source === 'ld') endpoint = '/api/news/laodong'; // API MỚI
+                else if (source === 'vnn') endpoint = '/api/news/vietnamnet';
+
+                const res = await fetch(endpoint);
+                const data = await res.json();
+                
+                newsData[source] = data;
+            } catch (err) {
+                console.error("Lỗi tải tin:", err);
+                alert("Không thể tải tin. Kiểm tra lại server Python!");
+            }
+        }
+
+        function renderAllNews() {
+            const container = document.getElementById("news-container");
+            let displayList = [];
+
+            if (state.vne) displayList = displayList.concat(newsData.vne.map(item => ({...item, source: 'VNExpress', type: 'source-vne'})));
+            if (state.tn) displayList = displayList.concat(newsData.tn.map(item => ({...item, source: 'Thanh Niên', type: 'source-tn'})));
+            if (state.tt) displayList = displayList.concat(newsData.tt.map(item => ({...item, source: 'Tuổi Trẻ', type: 'source-tt'})));
+            
+            // Logic hiển thị Lao Động
+            if (state.ld) displayList = displayList.concat(newsData.ld.map(item => ({...item, source: 'Lao Động', type: 'source-ld'})));
+            
+            if (state.vnn) displayList = displayList.concat(newsData.vnn.map(item => ({...item, source: 'VietnamNet', type: 'source-vnn'})));
+
+            container.innerHTML = "";
+
+            if (!state.vne && !state.tn && !state.tt && !state.ld && !state.vnn) {
+                container.innerHTML = '<div class="loading">Hãy chọn một nguồn tin để bắt đầu...</div>';
+                return;
+            }
+
+            let html = "";
+            displayList.forEach(item => {
+                html += `
+                    <div class="news-card ${item.type}">
+                        <div class="news-source">${item.source}</div>
+                        <h3 class="news-title">${item.title}</h3>
+                        <div class="news-summary">${item.summary}</div>
+                        <a href="${item.link}" target="_blank" class="news-link">Đọc chi tiết &rarr;</a>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>

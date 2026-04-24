@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tích Hợp Hệ Thống</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        .btn-group-custom {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .btn-custom {
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .dashboard-col {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            min-height: 400px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .data-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .data-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: #dee2e6;
+        }
+        .item-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .item-desc {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .price-text {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .weather-temp {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        /* Style cho ảnh sản phẩm */
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dashboard Tích Hợp 3 Hệ Thống</h1>
+
+    <div class="btn-group-custom">
+        <button class="btn btn-primary btn-custom" onclick="loadLazada()">Tải dữ liệu Lazada</button>
+        <button class="btn btn-info btn-custom text-white" onclick="loadWeather()">Tải Thời tiết</button>
+        <button class="btn btn-success btn-custom" onclick="loadNews()">Tải Tin tức</button>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-12">
+            <div class="dashboard-col">
+                <div class="section-title">🛒 Sản phẩm Lazada</div>
+                <div id="lazada"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-12">
+            <div class="dashboard-col">
+                <div class="section-title">⛅ Thời tiết</div>
+                <div id="weather"></div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+            <div class="dashboard-col">
+                <div class="section-title">📰 Tin tức mới</div>
+                <div id="news"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadLazada() {
+    // Hiển thị chữ "Đang tải..." trong lúc chờ dữ liệu
+    document.getElementById("lazada").innerHTML = "<p class='text-center text-muted'>Đang lấy dữ liệu...</p>";
+    
+    fetch("/api/lazada")
+    .then(res => res.json())
+    .then(data => {
+        let html = "";
+        data.forEach(p => {
+            // Nếu không có link ảnh, dùng ảnh mặc định
+            let imageSrc = p.img ? p.img : "https://via.placeholder.com/200x200?text=No+Image";
+            
+            html += `
+            <div class="data-card">
+                <img src="${imageSrc}" class="product-img" onerror="this.src='https://via.placeholder.com/200x200?text=Error'">
+                <div class="item-title">${p.title}</div>
+                <div class="price-text">${p.price}</div>
+            </div>`;
+        });
+        document.getElementById("lazada").innerHTML = html;
+    });
+}
+
+function loadWeather() {
+    fetch("/api/weather")
+    .then(res => res.json())
+    .then(w => {
+        document.getElementById("weather").innerHTML = `
+        <div class="data-card text-center" style="padding: 30px 15px;">
+            <div class="item-title fs-4">${w.city}</div>
+            <div class="weather-temp">${w.temp}°C</div>
+            <div class="item-desc fs-5 text-capitalize">${w.description}</div>
+            <div class="item-desc mt-2">Độ ẩm: <b>${w.humidity}%</b></div>
+        </div>`;
+    });
+}
+
+function loadNews() {
+    fetch("/api/news")
+    .then(res => res.json())
+    .then(data => {
+        let html = "";
+        data.forEach(n => {
+            html += `
+            <div class="data-card">
+                <div class="item-title">${n.title}</div>
+                <p class="item-desc">${n.description}</p>
+                <a href="${n.url}" target="_blank" style="font-size: 0.85rem;">Xem chi tiết</a>
+            </div>`;
+        });
+        document.getElementById("news").innerHTML = html;
+    });
+}
+</script>
+
+</body>
+</html>

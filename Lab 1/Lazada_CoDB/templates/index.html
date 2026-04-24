@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop Laptop Dell</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f0f2f5; }
+        h2 { text-align: center; color: #0f1e56; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        th { background-color: #004aad; color: white; padding: 15px; text-align: left; }
+        td { padding: 12px 15px; border-bottom: 1px solid #ddd; color: #333; }
+        tr:hover { background-color: #f1f1f1; }
+        .price { color: #d0021b; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>DANH SÁCH SẢN PHẨM TỪ LAZADA</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tên Sản Phẩm</th>
+                <th>Giá Bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product[0] }}</td>
+                <td class="price">{{ product[1] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="text-align:center; color:red;">
+                    Chưa có dữ liệu! Hãy chạy file laydulieuluuDB.py trước.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

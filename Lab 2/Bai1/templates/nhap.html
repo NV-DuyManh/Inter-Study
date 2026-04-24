@@ -1,0 +1,63 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Tổng hợp tin tức</title>
+</head>
+
+<body>
+
+    <h1>Tin tức tổng hợp</h1>
+
+    <button id="load-vne">Tải tin VNExpress</button>
+    <button id="load-tn">Tải tin Thanh Niên</button>
+
+    <div id="news"></div>
+
+    <script>
+        // ==========================================
+        // Hàm hiển thị dữ liệu ra giao diện
+        // ==========================================
+        function renderNews(data) {
+            let html = "";
+
+            data.forEach(item => {
+                html += `
+            <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                <h3>${item.title}</h3>
+                <p>${item.summary}</p>
+                <a href="${item.link}" target="_blank">Xem chi tiết</a>
+            </div>
+        `;
+            });
+
+            // Gắn vào thẻ div #news
+            document.getElementById("news").innerHTML = html;
+        }
+
+        // ==========================================
+        // Bắt sự kiện click nút VNExpress
+        // Gọi API /api/news/vnexpress
+        // ==========================================
+        document.getElementById("load-vne").onclick = function () {
+            fetch("/api/news/vnexpress")
+                .then(response => response.json())
+                .then(data => renderNews(data));
+        };
+
+        // ==========================================
+        // Bắt sự kiện click nút Thanh Niên
+        // Gọi API /api/news/thanhnien
+        // ==========================================
+        document.getElementById("load-tn").onclick = function () {
+            fetch("/api/news/thanhnien")
+                .then(response => response.json())
+                .then(data => renderNews(data));
+        };
+
+    </script>
+
+</body>
+
+</html> -->
