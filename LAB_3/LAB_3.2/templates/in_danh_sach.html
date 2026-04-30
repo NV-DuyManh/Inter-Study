@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Danh Sách Nhân Viên</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-light">
+    <div class="container-fluid py-5 px-4">
+      <div class="card shadow border-0 rounded-4">
+        <div
+          class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+        >
+          <h4 class="mb-0 fw-bold text-primary">
+            <i class="fas fa-list-ul me-2"></i>Danh Sách Nhân Viên Tích Hợp
+          </h4>
+          <a href="/" class="btn btn-outline-secondary btn-sm"
+            ><i class="fas fa-home me-1"></i>Về Trang Chủ</a
+          >
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-4">Mã NV</th>
+                  <th>Họ Tên</th>
+                  <th>Giới Tính</th>
+                  <th>Liên Hệ</th>
+                  <th>Đơn Vị</th>
+                  <th>Ngày Vào</th>
+                  <th class="text-center">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for nv in nhan_viens %}
+                <tr>
+                  <td class="ps-4">
+                    <span class="badge bg-secondary text-white"
+                      >{{ nv.MaNV }}</span
+                    >
+                  </td>
+                  <td>
+                    <div class="fw-bold">{{ nv.HoTen }}</div>
+                    <small class="text-muted">{{ nv.NgaySinh }}</small>
+                  </td>
+                  <td>{{ nv.GioiTinh }}</td>
+                  <td>
+                    <div>
+                      <i class="fas fa-phone small me-1"></i>{{ nv.SoDienThoai
+                      }}
+                    </div>
+                    <div class="small text-muted">
+                      <i class="fas fa-envelope small me-1"></i>{{ nv.Email }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="badge bg-info text-dark">{{ nv.PhongBan }}</div>
+                    <div class="small text-muted">{{ nv.ChucVu }}</div>
+                  </td>
+                  <td>{{ nv.NgayVaoLam }}</td>
+                  <td class="text-center">
+                    <a
+                      href="{{ url_for('cap_nhat_nhan_vien', manv=nv.MaNV) }}"
+                      class="btn btn-sm btn-primary me-2 shadow-sm"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <form
+                      action="{{ url_for('xoa_nhan_vien', manv=nv.MaNV) }}"
+                      method="POST"
+                      style="display: inline"
+                      onsubmit="
+                        return confirm(
+                          'Bạn có chắc chắn muốn xóa nhân viên này?',
+                        );
+                      "
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-danger shadow-sm"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập Nhật Nhân Viên</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+<div class="container py-5">
+  <div class="card shadow p-4">
+    <h2 class="text-primary mb-4">Cập Nhật Hồ Sơ</h2>
+
+    <form method="POST">
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label>Họ và Tên</label>
+          <input type="text" name="ho_ten" class="form-control" value="{{ nv.HoTen }}" required>
+        </div>
+
+        <div class="col-md-3">
+          <label>Ngày Sinh</label>
+          <input type="date" name="ngay_sinh" class="form-control" value="{{ nv.NgaySinh }}">
+        </div>
+
+        <div class="col-md-3">
+          <label>Giới Tính</label>
+          <select name="gioi_tinh" class="form-select">
+            <option value="Nam" {{ 'selected' if nv.GioiTinh == 'Nam' else '' }}>Nam</option>
+            <option value="Nữ" {{ 'selected' if nv.GioiTinh == 'Nữ' else '' }}>Nữ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label>Địa Chỉ</label>
+        <input type="text" name="dia_chi" class="form-control" value="{{ nv.DiaChi }}">
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>Số Điện Thoại</label>
+          <input type="text" name="so_dien_thoai" class="form-control" value="{{ nv.SoDienThoai }}">
+        </div>
+
+        <div class="col-md-4">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" value="{{ nv.Email }}">
+        </div>
+
+        <div class="col-md-4">
+          <label>Ngày Vào Làm</label>
+          <input type="date" name="ngay_vao_lam" class="form-control" value="{{ nv.NgayVaoLam }}">
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <label>Phòng Ban</label>
+          <input type="text" name="phong_ban" class="form-control" value="{{ nv.PhongBan }}">
+        </div>
+
+        <div class="col-md-6">
+          <label>Chức Vụ</label>
+          <input type="text" name="chuc_vu" class="form-control" value="{{ nv.ChucVu }}">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4">Lưu Thay Đổi</button>
+        <a href="{{ url_for('in_danh_sach') }}" class="btn btn-secondary px-4">Hủy</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+</body>
+</html>

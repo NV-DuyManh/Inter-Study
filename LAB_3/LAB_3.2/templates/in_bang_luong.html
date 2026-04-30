@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Lương Nhân Viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark">Bảng Lương Nhân Viên Tích Hợp</h2>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">⬅ Quay về Dashboard</a>
+        </div>
+
+        <div class="card shadow border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tên Nhân Viên</th>
+                            <th>Tháng</th>
+                            <th>Lương Cơ Bản</th>
+                            <th>Phụ Cấp</th>
+                            <th>Thưởng</th>
+                            <th>Khấu Trừ</th>
+                            <th class="text-success">Thực Nhận</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nv, luong in nhan_viens %}
+                        <tr>
+                            <td class="fw-bold">{{ nv.HoTen }}</td>
+                            <td>
+                                <span class="badge bg-info text-dark">
+                                    {{ luong.ThangNam if luong.ThangNam is not string else luong.ThangNam }}
+                                </span>
+                            </td>
+                            <td>{{ "{:,.0f}".format(luong.LuongCoBan) if luong.LuongCoBan else 0 }}</td>
+                            <td>{{ "{:,.0f}".format(luong.PhuCap) if luong.PhuCap else 0 }}</td>
+                            <td>{{ "{:,.0f}".format(luong.Thuong) if luong.Thuong else 0 }}</td>
+                            <td class="text-danger">-{{ "{:,.0f}".format(luong.KhauTru) if luong.KhauTru else 0 }}</td>
+                            <td class="fw-bold text-primary">
+                                {{ "{:,.0f}".format(luong.LuongThucNhan) if luong.LuongThucNhan else 0 }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
